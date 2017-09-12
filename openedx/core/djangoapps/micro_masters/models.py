@@ -229,10 +229,22 @@ class Program(TimeStampedModel):
     )
     price = models.IntegerField()
     banner_image = models.ImageField(
-        max_length=200, upload_to=content_file_name)
-    introductory_video = models.FileField(upload_to=content_file_name)
+        max_length=200,
+        upload_to=content_file_name,
+        blank=True,
+        null=True
+    )
+    introductory_video = models.FileField(
+        upload_to=content_file_name,
+        blank=True,
+        null=True
+    )
     overview = models.TextField(null=True, blank=True, default=overview)
-    sample_certificate_pdf = models.FileField(upload_to=content_file_name)
+    sample_certificate_pdf = models.FileField(
+        upload_to=content_file_name,
+        blank=True,
+        null=True
+    )
     average_length = models.CharField(
         max_length=40,
         null=True,
@@ -255,7 +267,6 @@ class Program(TimeStampedModel):
     institution = models.ForeignKey(Institution)
     instructors = models.ManyToManyField(
         Instructor,
-        null=True,
         blank=True
     )
     courses = models.ManyToManyField(Courses)

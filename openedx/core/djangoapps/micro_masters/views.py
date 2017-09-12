@@ -578,8 +578,47 @@ def show_program_receipt(request, ordernum):
 
     if order.user != request.user or order.status not in ['purchased', 'refunded']:
         raise Http404('Order not found!')
-
     return _show_receipt_html(request, order)
+
+
+@login_required
+def program_enroll(request, program_id):
+
+    user = request.user
+    try:
+        program = Program.objects.get(pk=program_id)
+    except Exception, e:
+        raise Http404('Program not found!')
+
+    courses = []
+    for course in program.courses.select_related():
+        courses += [CourseOverview.get_from_id(course.course_key)]
+    if program.price <= 0:
+        ProgramEnrollment.enroll(user, program.id)
+        dashboard = reverse('dashboard') + '?active=program'
+        return HttpResponseRedirect(dashboard)
+    else:
+        return HttpResponseRedirect(reverse('openedx.core.djangoapps.micro_masters.views.program_buy', args=str(program.id)))
+
+
+@login_required
+def program_unenroll(request):
+
+    user = request.user
+    program_id = request.POST.get('program_id', '')
+    try:
+        program = Program.objects.get(pk=program_id)
+    except Exception, e:
+        raise Http404('Program not found!')
+
+    courses = []
+    for course in program.courses.select_related():
+        courses += [CourseOverview.get_from_id(course.course_key)]
+    if program.price <= 0:
+        ProgramEnrollment.unenroll(user, program.id)
+        return HttpResponse()
+    else:
+        return HttpResponseRedirect(reverse('openedx.core.djangoapps.micro_masters.views.program_buy', args=str(program.id)))
 
 
 def program_about(request, program_id):
@@ -596,11 +635,11 @@ def program_about(request, program_id):
     for course in program.courses.select_related():
         courses += [CourseOverview.get_from_id(course.course_key)]
     user_is_enrolled = False
+    program_is_free_not_enroll = False
     if user.is_authenticated():
         user_is_enrolled = ProgramEnrollment.is_enrolled(user, program.id)
         if program.price <= 0 and not user_is_enrolled:
-            ProgramEnrollment.enroll(user, program.id)
-            user_is_enrolled = True
+            program_is_free_not_enroll = True
 
     context = {}
     currency = settings.PAID_COURSE_REGISTRATION_CURRENCY
@@ -608,6 +647,7 @@ def program_about(request, program_id):
     context['program'] = program
     context['courses'] = courses
     context['user_is_enrolled'] = user_is_enrolled
+    context['program_is_free_not_enroll'] = program_is_free_not_enroll
 
     return render_to_response('micro_masters/program_about.html', context)
 
@@ -709,10 +749,6 @@ def program_buy(request, program_id):
     user_is_enrolled = ProgramEnrollment.is_enrolled(user, program.id)
 
     if program.price <= 0 and not user_is_enrolled:
-        ProgramEnrollment.enroll(user, program.id)
-        user_is_enrolled = True
-
-    if user_is_enrolled:
         return HttpResponseRedirect(reverse('openedx.core.djangoapps.micro_masters.views.program_about', args=str(program.id)))
     courses = []
     for course in program.courses.select_related():

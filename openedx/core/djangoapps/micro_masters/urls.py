@@ -4,13 +4,16 @@ from .views import (
     show_program_receipt, program_buy,
     use_code, reset_code_redemption,
     prorgam_user_certificate,
-    program_info
+    program_info, program_enroll,
+    program_unenroll
 )
 from .program_reindex import index_programs_information, reindex_specific_program
 
 urlpatterns = [
     url(r'^(?P<program_id>[0-9]+)/$', program_about, name='program_about'),
     url(r'^(?P<program_id>[0-9]+)/info$', program_info, name='program_info'),
+    url(r'^(?P<program_id>[0-9]+)/enroll$', program_enroll, name='program_enroll'),
+    url(r'^unenroll/$', program_unenroll, name='program_unenroll'),
     url(r'^receipt/(?P<ordernum>[0-9]+)/$', show_program_receipt),
     url(r'^buy/(?P<program_id>[0-9]+)/$', program_buy, name='program_buy'),
     # response from payment gateway for programs

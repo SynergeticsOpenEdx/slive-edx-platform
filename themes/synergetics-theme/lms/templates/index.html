@@ -55,12 +55,6 @@ from django.conf import settings
           <div class="banner-text">
                 <h2>Rich Skilling Courses</h2>
                 <p>Start ahead of peers</p>
-                <div class="search-box">
-                  <form method="get" action="/courses">
-                    <input name="search_query" placeholder="Search here" type="text">
-                    <input value="" type="submit">
-                  </form>
-                </div>
                 <a href="/courses" class="btn-style fill">Start learning now</a>
                 <div class="bottom-arrow">
                     <a href="javascript:void(0);"><img src="${static.url('images/down-arrow.png')}" alt=""></a>
@@ -119,7 +113,7 @@ from django.conf import settings
                               <div class="col-md-4 col-sm-6">
                                 <div class="course-box">
                                   <div class="img">
-                                      <img src="${program.banner_image.url}" alt="${program.name}">
+                                      <img src="${program.banner_image.url if program.banner_image else static.url('images/banner-black-background.jpg')}" alt="${program.name}">
                                   </div>
                                   <div class="details">
                                     <div class="name">${program.name}</div>

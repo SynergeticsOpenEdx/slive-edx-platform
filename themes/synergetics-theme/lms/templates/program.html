@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
     <a href="${reverse('program_about', args=str(program.id))}">
     <header class="course-image">
         <div class="cover-image">
-            <img src="${program.banner_image.url}" alt="${program.name}" />
+            <img src="${program.banner_image.url if program.banner_image else static.url('images/banner-black-background.jpg')}" alt="${program.name}" />
             <div class="learn-more" aria-hidden="true">${_("LEARN MORE")}</div>
         </div>
     </header>

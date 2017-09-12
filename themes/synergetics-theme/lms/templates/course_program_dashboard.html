@@ -83,13 +83,13 @@ from openedx.core.djangolib.markup import HTML, Text
     <div class="course-material">
         <ol class="tabs course-tabs">
             <li class="tab">
-            <a href="javascript:void(0);" onclick="openCity(event, 'my-courses')" class="tablinks" id="defaultOpen">
+            <a href="javascript:void(0);" onclick="openCity(event, 'my-courses')" class="tablinks" id="${'defaultOpen' if not request.GET.get('active', '') == 'program' else ''}">
             My Courses
             </a>
             </li>
 
             <li class="tab">
-            <a href="javascript:void(0);" onclick="openCity(event, 'my-programs')" class="tablinks">
+            <a href="javascript:void(0);" onclick="openCity(event, 'my-programs')" class="tablinks" id="${'defaultOpen' if request.GET.get('active', '') == 'program' else ''}">
             My Paths
             </a>
             </li>
@@ -357,7 +357,54 @@ from openedx.core.djangolib.markup import HTML, Text
   </div>
 </div>
 
+<div id="unenroll-program-modal" class="modal unenroll-modal" aria-hidden="true">
+  <div class="inner-wrapper" role="dialog" aria-labelledby="unenrollment-modal-title">
+    <button class="close-modal">
+      <span class="icon fa fa-remove" aria-hidden="true"></span>
+      <span class="sr">
+        ## Translators: this is a control to allow users to exit out of this modal interface (a menu or piece of UI that takes the full focus of the screen)
+        ${_("Close")}
+      </span>
+    </button>
+
+    <header>
+      <h2 id="unenrollment-program-modal-title">
+        <span id='track-info'>Are you sure you want to unenroll from the program </span>
+        <span id='refund-info'></span>
+        <span class="sr">,
+          ## Translators: this text gives status on if the modal interface (a menu or piece of UI that takes the full focus of the screen) is open or not
+          ${_("window open")}
+        </span>
+      </h2>
+      <hr/>
+    </header>
+    <div id="unenroll_error" class="modal-form-error"></div>
+
+    <form id="unenroll_program_form" method="post" data-remote="true" action="${reverse('program_unenroll')}">
+      <input name="program_id" id="unenroll_program_id" type="hidden" />
+      <div class="submit">
+        <input name="submit" type="submit" value="${_("Unenroll")}" />
+      </div>
+    </form>
+  </div>
+</div>
+
 <script type="text/javascript">
+$(document).ready(function(){
+    $(".unenroll-modal-click").click(function(){
+        $("#unenroll_program_id").val(this.dataset.programId);
+        // $("#unenrollment-program-modal-title #track-info").append("<span>asdf</span>");
+        $("#unenroll-program-unenroll").leanModal();
+    })
+
+    $("#unenroll_program_form").submit(function(e){
+        var unenrollURL = $("#unenroll_program_form").attr("action");
+        $.post(unenrollURL, $(this).serialize(), function(data){
+           location.href = document.location.href
+        });
+    });
+})
+
 function openCity(evt, cityName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");

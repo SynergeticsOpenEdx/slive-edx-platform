@@ -18,7 +18,7 @@ from openedx.core.djangolib.markup import HTML, Text
         <h2 class="hd hd-2 sr" id="details-heading">${_('Program details')}</h2>
         <div class="wrapper-course-image" aria-hidden="true">
           <a href="${reverse('openedx.core.djangoapps.micro_masters.views.program_info', kwargs={'program_id': program.id})}" data-course-key="${program.id}" class="cover">
-            <img src="${program.banner_image.url}" class="course-image program-image" alt="${program.name}" />
+            <img src="${program.banner_image.url if program.banner_image else static.url('images/banner-black-background.jpg')}" class="course-image program-image" alt="${program.name}" />
           </a>
         </div>
           <div class="wrapper-course-details">
@@ -78,6 +78,24 @@ from openedx.core.djangolib.markup import HTML, Text
                         </a>
                     % endif
                   % endif
+
+
+          <div class="setting-link wrapper-action-more" data-course-key="">
+            <button class="action action-more" type="button" id="actions-dropdown-link-path-${dashboard_index}" aria-haspopup="true" aria-expanded="false" aria-controls="actions-dropdown-path-${dashboard_index}" data-course-number="course number" data-course-name="course name" data-dashboard-index="path-${dashboard_index}">
+
+                <span class="fa fa-cog" aria-hidden="true"></span>
+            </button>
+
+              <div class="actions-dropdown" id="actions-dropdown-path-${dashboard_index}" tabindex="-1">
+                  <ul class="actions-dropdown-list" id="actions-dropdown-list-path-${dashboard_index}" aria-label="${_('Available Actions')}" role="menu">
+                    <li class="actions-item" id="actions-item-unenroll-path-${dashboard_index}">
+                      <a href="#unenroll-program-modal" class="unenroll-modal-click" data-program-id="${program.id}" rel="leanModal" >${_("Unenroll")}</a>
+                    </li>
+                  </ul>
+              </div>
+            </div>
+
+
                 </div>
             </div>
 

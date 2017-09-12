@@ -141,7 +141,7 @@ from openedx.core.lib.courses import course_image_url
       <div class="user-data">
         <div class="clearfix">
           <div class="image">
-            <img class="item-image" src="${course.banner_image.url}"
+            <img class="item-image" src="${course.banner_image.url if course.banner_image else static.url('images/banner-black-background.jpg')}"
                  alt="${course.name | h} ${course.name} Image"/>
           </div>
           <div class="data-input">
