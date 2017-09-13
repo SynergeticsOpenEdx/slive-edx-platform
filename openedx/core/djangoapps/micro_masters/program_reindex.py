@@ -80,6 +80,7 @@ def index_course_programs(course_id):
     course_key = CourseKey.from_string(course_id)
     programs = Program.objects.filter(courses__course_key=course_key)
     for program in programs:
+        program_banner_image_url = program.banner_image.url if program.banner_image else '/static/images/banner-black-background.jpg'
         if program.start <= datetime.now(pytz.UTC).date():
             program_info = {
                 'id': program.id,
@@ -88,7 +89,7 @@ def index_course_programs(course_id):
                     'display_name': program.name,
                     'overview': program.short_description
                 },
-                'image_url': program.banner_image.url,
+                'image_url': program_banner_image_url,
                 'start': program.start,
                 'language': program.language.code,
                 'subject': program.subject.name,
@@ -137,6 +138,7 @@ def reindex_specific_program(request, pk):
             })
 
     if program.start <= datetime.now(pytz.UTC).date():
+        program_banner_image_url = program.banner_image.url if program.banner_image else '/static/images/banner-black-background.jpg'
         program_info = {
             'id': program.id,
             'course': program.id,
@@ -144,7 +146,7 @@ def reindex_specific_program(request, pk):
                 'display_name': program.name,
                 'overview': program.short_description
             },
-            'image_url': program.banner_image.url,
+            'image_url': program_banner_image_url,
             'start': program.start,
             'language': program.language.code,
             'subject': program.subject.name,

@@ -89,7 +89,6 @@ from openedx.core.djangoapps.micro_masters.forms import (
     ProgramEnrollmentForm, ProgramGeneratedCertificateForm,
     ProgramCouponRedemptionForm
 )
-from openedx.core.djangoapps.micro_masters.program_reindex import remove_program_elasticsearch
 
 
 STATIC_PAGES = {'About': 'about',
@@ -965,8 +964,8 @@ def show_programs(request):
     Display all the programs.
     """
     PROGRAM_DISPLAY_HEADER = ['Program', 'Average Length', 'Effort', 'Total Enrollments',
-                             'Start Date', 'End Date', 'Price', 'Reindex All', 'Delete?']
-    NO_SORT_COLUMNS = ['Delete?', 'Reindex All']
+                             'Start Date', 'End Date', 'Price', 'Delete?']
+    NO_SORT_COLUMNS = ['Delete?']
     context = {}
     program_details = []
     programs_list = get_num_programs()
@@ -980,7 +979,6 @@ def show_programs(request):
         details['program_start'] = program.start.strftime("%d/%m/%Y") if program.start is not None else ''
         details['program_end'] = program.end.strftime("%d/%m/%Y") if program.end is not None else ''
         details['price'] = get_programe_price(program)
-        details['re_index'] = 'Reindex'
         details['program_id'] = program.id
         program_details.append(details)
     context['program_details'] = program_details
@@ -1004,7 +1002,7 @@ def create_program(request, template_name='admin_dash/management/programs_create
 @site_administrator_only
 def update_program(request, pk, template_name='admin_dash/management/programs_create_form.html'):
     program = get_object_or_404(Program, pk=pk)
-    form = ProgramForm(request.POST or None, instance=program)
+    form = ProgramForm(request.POST or None, request.FILES or None, instance=program)
     form = program.set_start_and_end_date(form)
     if form.is_valid():
         form.save()
@@ -1021,7 +1019,6 @@ def update_program(request, pk, template_name='admin_dash/management/programs_cr
 def program_delete(request, pk):
     program = get_object_or_404(Program, pk=pk)
     program.delete()
-    remove_program_elasticsearch(program_id=pk)
     return redirect(reverse('show-programs'))
 
 
@@ -1159,7 +1156,7 @@ def show_instructor(request):
 @login_required
 @site_administrator_only
 def add_instructor(request, template_name='admin_dash/management/instructor_create_form.html'):
-    form = InstructorForm(request.POST or None, request.FILES or None)
+    form = InstructorForm(request.POST or None, request.FILES or None, request.FILES or None)
     if form.is_valid():
         instructor = form.save(commit=False)
         instructor.save()
@@ -1171,7 +1168,7 @@ def add_instructor(request, template_name='admin_dash/management/instructor_crea
 @site_administrator_only
 def update_instructor(request, pk, template_name='admin_dash/management/instructor_create_form.html'):
     instructor = get_object_or_404(Instructor, pk=pk)
-    form = InstructorForm(request.POST or None, instance=instructor)
+    form = InstructorForm(request.POST or None, request.FILES or None, instance=instructor)
     if form.is_valid():
         form.save()
         return redirect(reverse('show-instructor'))
@@ -1225,7 +1222,7 @@ def add_institution(request, template_name='admin_dash/management/institution_cr
 @site_administrator_only
 def update_institution(request, pk, template_name='admin_dash/management/institution_create_form.html'):
     institution = get_object_or_404(Institution, pk=pk)
-    form = InstitutionForm(request.POST or None, instance=institution)
+    form = InstitutionForm(request.POST or None, request.FILES or None, instance=institution)
     if form.is_valid():
         form.save()
         return redirect(reverse('show-institution'))
@@ -1281,7 +1278,7 @@ def add_signatories(request, template_name='admin_dash/management/signatories_cr
 @site_administrator_only
 def update_signatories(request, pk, template_name='admin_dash/management/signatories_create_form.html'):
     signatories = get_object_or_404(ProgramCertificateSignatories, pk=pk)
-    form = ProgramCertificateSignatoriesForm(request.POST or None, instance=signatories)
+    form = ProgramCertificateSignatoriesForm(request.POST or None, request.FILES or None, instance=signatories)
     if form.is_valid():
         form.save()
         return redirect(reverse('show-signatories'))

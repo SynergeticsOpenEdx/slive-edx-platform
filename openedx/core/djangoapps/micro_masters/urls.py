@@ -7,7 +7,7 @@ from .views import (
     program_info, program_enroll,
     program_unenroll
 )
-from .program_reindex import index_programs_information, reindex_specific_program
+# from .program_reindex import index_programs_information, reindex_specific_program
 
 urlpatterns = [
     url(r'^(?P<program_id>[0-9]+)/$', program_about, name='program_about'),
@@ -22,9 +22,9 @@ urlpatterns = [
     url(r'^reset_code_redemption/$', reset_code_redemption),
 
     # for reindex all programs
-    url(r'^reindex-all-programs/$', index_programs_information, name='reindex-all-programs'),
+    # url(r'^reindex-all-programs/$', index_programs_information, name='reindex-all-programs'),
     # reindex only given program
-    url(r'^reindex-program/(?P<pk>[0-9]+)/$', reindex_specific_program, name='reindex-program'),
+    # url(r'^reindex-program/(?P<pk>[0-9]+)/$', reindex_specific_program, name='reindex-program'),
 
     # user program certificate
     url(

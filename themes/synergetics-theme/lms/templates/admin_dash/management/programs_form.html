@@ -30,11 +30,7 @@
                 <thead>
                     <tr>
                     % for heading in program_headers:
-                        % if heading == 'Reindex All':
-                            <th class="${'nosort' if heading in no_sort_columns else ''}"><a href="${reverse('reindex-all-programs')}" >${heading}</a></th>
-                        % else:
-                            <th class="${'nosort' if heading in no_sort_columns else ''}">${heading}</th>
-                        % endif
+                        <th class="${'nosort' if heading in no_sort_columns else ''}">${heading}</th>
                     % endfor
                     </tr>
                 </thead>
@@ -52,16 +48,11 @@
                                         ${program[details]}
                                         <span id="${program['program_id']}_currency"> ${settings.PAID_COURSE_REGISTRATION_CURRENCY[0].upper() if program[details] != 'FREE' else ''}</span>
                                     </td>
-                                % elif details == 're_index':
-                                    <td>
-                                        <a href="${reverse('reindex-program', args=[program['program_id']])}" class="update-link">${program[details]}</a>
-                                    </td>
                                 % else:
                                     % if details != 'program_id':
                                         <td>${program[details]}</td>
                                     % endif
                                 % endif
-
                             % endfor
                                 <td>
                                     <a href="#" class="delete-program"><span class="fa fa-trash-o" data-course-key="${program['program_id']}" data-delete-url="${reverse('program-delete', args=[program['program_id']])}" aria-hidden="true"></span></a>

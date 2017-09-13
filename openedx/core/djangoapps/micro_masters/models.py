@@ -271,11 +271,6 @@ class Program(TimeStampedModel):
     )
     courses = models.ManyToManyField(Courses)
 
-    def image_tag(self):
-        return u'<img src="%s" width="150" height="50" />' % self.banner_image.url
-    image_tag.short_description = 'Banner image'
-    image_tag.allow_tags = True
-
     class Meta:
         app_label = 'micro_masters'
         verbose_name = 'Program'

@@ -3095,3 +3095,4 @@ COURSE_DISCOVERY_MEANINGS = {
 # Setting for overriding default filtering facets for Course discovery
 COURSE_DISCOVERY_FILTERS = ["subject", "org", "language", "modes"]
 
+FEATURES['SHOW_REVENUE_REPORT'] = False
