@@ -128,7 +128,8 @@ LMS_BASE = ENV_TOKENS.get('LMS_BASE')
 LMS_ROOT_URL = ENV_TOKENS.get('LMS_ROOT_URL')
 # Note that FEATURES['PREVIEW_LMS_BASE'] gets read in from the environment file.
 
-SITE_NAME = ENV_TOKENS['SITE_NAME']
+#SITE_NAME = ENV_TOKENS['SITE_NAME']
+SITE_NAME = "synergetics-live.com"
 
 ALLOWED_HOSTS = [
     # TODO: bbeggs remove this before prod, temp fix to get load testing running
